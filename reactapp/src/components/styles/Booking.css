@@ -1,0 +1,71 @@
+.App-temp{
+    height: 130vh;
+    background: linear-gradient(135deg, var(--primary),var(--secondary));
+    
+}
+.contents{
+    height: 102vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-top: 4%;
+    
+}
+
+.Regdiv {
+    /* display: flex; */
+    flex-wrap: wrap;
+    width: 75%;
+    background-color: rgba(232, 237, 240, 0.432);
+    border-radius: 100px;
+    text-align: center;
+    height: 100%;
+
+}
+
+.inp{
+    width: 100%;
+    padding: 5vh;
+    top: 0;
+}
+
+.text-center{
+    margin-top: auto;
+}
+
+.left{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15%;
+    background-color: rgba(249, 250, 250, 0.521);
+    height: 100%;
+    width: 40%;
+    top:10%;
+}
+
+.address{
+    /* width: 70vh; */
+    /* font-weight: bold; */
+    /* position: relative;
+    top: 7vh;
+    left: 7vh; */
+
+    font-size: xx-large;
+    text-align: center;
+    
+    border-radius: 10%;
+}
+
+.img{
+    width: 30vh;
+    height: 30vh;
+    border-radius: 50%;
+    /* float: left;
+    margin: 5vh 0 0 26vh;
+    position: relative;
+    top: 4vh; */
+    z-index: 1;
+}
+

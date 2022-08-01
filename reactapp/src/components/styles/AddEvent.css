@@ -1,0 +1,6 @@
+.temp{
+    height: 99.8vh;
+    margin-top:48px;
+    background: linear-gradient(135deg, var(--primary),var(--secondary));
+    
+}
