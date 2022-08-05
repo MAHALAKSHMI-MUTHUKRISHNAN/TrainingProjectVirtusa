@@ -2,6 +2,7 @@ package com.example.springapp.controller;
 
 import com.example.springapp.entity.FileDB;
 import com.example.springapp.message.ResponseFile;
+import com.example.springapp.message.ResponseMessage;
 import com.example.springapp.service.FileStorageService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,15 @@ public class FileController {
     @Autowired
     private FileStorageService storageService;
     @PostMapping("/upload")
-    public String uploadFile(@RequestParam MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam MultipartFile file) {
         String message = "";
         try {
-
             storageService.store(file);
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
-            return message;
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         } catch (Exception e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-            return message;
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }
     @GetMapping("/files")

@@ -22,7 +22,7 @@ function LoginForm(){
       console.log(res);
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("usertoken",res.data.jwtToken);
-      if(data.username==="admin") {
+      if(data.username.includes("admin")) {
         localStorage.setItem("isAdmin","true");
         toast.success('Welcome Admin',{autoClose: 2000});
         setTimeout(() => { window.location.replace('/admin/home'); }, 2000);

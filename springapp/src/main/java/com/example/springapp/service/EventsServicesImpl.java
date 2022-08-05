@@ -54,8 +54,9 @@ public class EventsServicesImpl implements EventsServices{
 
     @Override
     public List<Booking> viewEventBookings(long id) {
-        if(eventsDao.findById(id).isEmpty()) throw new ResourceNotFoundException("Event Not found");
-        List<Booking> bookings = eventsDao.findById(id).get().getBookings();
+        Optional<Events> viewEvent = eventsDao.findById(id);
+        if(viewEvent.isEmpty()) throw new ResourceNotFoundException("Event Not found");
+        List<Booking> bookings =  viewEvent.get().getBookings();
         if(bookings.isEmpty()) throw new ResourceNotFoundException("Bookings not available for the Event");
         return bookings;
     }
@@ -75,7 +76,7 @@ public class EventsServicesImpl implements EventsServices{
         if(!(eventsDao.findById(event.getId()).isPresent())) throw new ResourceNotFoundException("Couldn't Edit :Invalid Event id"+event.getId());
         List<Events> allEvents =eventsDao.findAll();
         for(Events x:allEvents){
-            if(event.getName().equals(x.getName())){
+            if(event.getId()!= x.getId() && event.getName().equals(x.getName())){
                 throw new ValueExistsException("Event with name "+event.getName()+" already available");
             }
         }

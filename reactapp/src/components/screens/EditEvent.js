@@ -4,6 +4,8 @@ import { Formik, Form} from 'formik';
 import TextBar from './TextBar';
 import * as Yup from 'yup';
 import axiosObject from '../../api/bootapi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 function EditEvent({editItem}) {
 
@@ -25,8 +27,11 @@ function EditEvent({editItem}) {
         axiosObject.put(`/updateEvent`,data).then(
            (response)=>{
              console.log(response);
-             window.location.replace('/admin/home');
+             toast.success(response.data,{autoClose: 2000});
+               setTimeout(() => {  window.location.replace('/admin/home'); }, 2000);
            },(error)=>{
+            toast.error(error.response.data.message,{autoClose: 5000});
+            setTimeout(() => { window.location.replace('/admin/home'); }, 5000);
              console.log(error);
            }
          )
@@ -34,6 +39,7 @@ function EditEvent({editItem}) {
 
   return (
     <>
+    <ToastContainer/>
      <Formik
     initialValues={{
       id:editItem.id,

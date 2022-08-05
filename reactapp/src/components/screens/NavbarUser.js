@@ -48,7 +48,15 @@ function NavbarUser() {
                 Bookings
               </Link>
             </li>
-           
+            <li className='nav-item'>
+              <Link
+                to='/user/profile'
+                className='nav-links'
+                onClick={closeMobileMenu}
+              >
+                Dashboard
+              </Link>
+            </li>
             <li className='nav-item'>
               <Link
                 to='/'

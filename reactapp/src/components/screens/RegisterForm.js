@@ -27,11 +27,13 @@ function RegisterForm(){
       .required('Password is required'),
   })
   const sendData=(data)=>{
-    axiosObject.post(`/register`,data).timeout(12.5).then(
+    axiosObject.post(`/register`,data).then(
       (response)=>{
+        if(response.status === 200){
         toast.success(response.data,{autoClose: 5000});
        setTimeout(() => { window.location.replace('/Login'); }, 5000);
         console.log(response);
+        }
       
       }).catch((error)=>{
         if(error.response){

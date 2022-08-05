@@ -40,13 +40,13 @@ function EditBooking({booking}){
           console.log(response);
           if(response.status === 200){
           toast.success(response.data,{autoClose: 5000});
-        setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
+       setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
           }
         }
       ).catch((error)=>{
         if(error.response){
           toast.error(error.response.data.details,{autoClose: 5000});
-          setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
+         setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
           console.log(error.response.data);
         }
       });

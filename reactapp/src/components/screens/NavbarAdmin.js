@@ -48,15 +48,7 @@ function NavbarAdmin() {
                 Bookings
               </Link>
             </li>
-            <li className='nav-item'>
-              <Link
-                to='/admin/addEvent'
-                className='nav-links'
-                onClick={closeMobileMenu}
-              >
-                Add Events
-              </Link>
-              </li>
+           
               <li className='nav-item'>
               <Link
                 to='/admin/dashboard'

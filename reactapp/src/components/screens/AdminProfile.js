@@ -8,7 +8,10 @@ function AdminProfile() {
     <>
     <NavbarAdmin/>
     <div className="home-body"style={{display:"flex",flexDirection:"column",alignItems:"center",margin:"20px"}}>
-    <Link to="/admin/addphotos"> <ReactiveButton idleText={'Add Photos For Fallery'} color='Violet' animation={true}>Add Photos For Fallery</ReactiveButton></Link>
+    <Link to="/admin/addphotos"> <ReactiveButton idleText={'Add Photos For Gallery'} color='Violet' animation={true}></ReactiveButton></Link>
+      </div>
+      <div className="home-body"style={{display:"flex",flexDirection:"column",alignItems:"center",margin:"20px"}}>
+    <Link to="/admin/addevent"> <ReactiveButton idleText={'Add Events'} color='Violet' animation={true}></ReactiveButton></Link>
       </div>
     </>
   )

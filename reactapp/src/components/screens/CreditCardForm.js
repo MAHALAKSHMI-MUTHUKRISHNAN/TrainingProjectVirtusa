@@ -36,22 +36,28 @@ const handleFocus = (e) => {
 const updateInitialPay=(id)=>{
   axiosObject.put(`/updateInitialPay/${id}`).then(
     (response)=>{
-      toast.success('Payment successful',{autoClose: 2000});
+      toast.success(response.data,{autoClose: 2000});
       setTimeout(() => { window.location.replace('/user/mybookings'); }, 2000);
-    },(error)=>{
-      console.log(error);
-    }
-  )
+    }).catch((error)=>{
+      if(error.response){
+        toast.error(error.response.data.details,{autoClose: 2000});
+       setTimeout(() => { window.location.replace('/user/mybookings'); }, 2000);
+        console.log(error.response.data);
+      }
+    });
 }
 const updateFinalPay=(id)=>{
   axiosObject.put(`/updateFinalPay/${id}`).then(
     (response)=>{
-      toast.success('Payment successful',{autoClose: 2000});
+      toast.success(response.data,{autoClose: 2000});
       setTimeout(() => { window.location.replace('/user/mybookings'); }, 2000);
-    },(error)=>{
-      console.log(error);
-    }
-  )
+    }).catch((error)=>{
+      if(error.response){
+        toast.error(error.response.data.details,{autoClose: 2000});
+       setTimeout(() => { window.location.replace('/user/mybookings'); }, 2000);
+        console.log(error.response.data);
+      }
+    });
 }
 const handleSubmit =e => {
     e.preventDefault();

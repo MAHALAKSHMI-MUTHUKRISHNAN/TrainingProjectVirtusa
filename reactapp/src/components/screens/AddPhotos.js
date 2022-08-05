@@ -23,7 +23,7 @@ function AddPhotos(){
         axiosObject.post(`/upload`,dataArray,config).then(
           (response)=>{
              if(response.status===200){
-              toast.success(response.data,{autoClose: 2000});
+              toast.success(response.data.message,{autoClose: 2000});
               setTimeout(() => {  window.location.replace('/admin/addPhotos'); }, 2000);
             }
           }).catch((error)=>{
