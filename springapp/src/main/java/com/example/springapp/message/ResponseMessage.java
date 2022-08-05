@@ -15,4 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ResponseMessage {
     private String message;
     private String details;
+
+    public ResponseMessage(String message){
+        this.message=message;
+    }
 }

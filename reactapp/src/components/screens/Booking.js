@@ -26,14 +26,6 @@ function Booking(){
 
   const [user,setUser] = useState([]);
 
-
-
-  const details = {
-    recipient :user.email,
-    msgBody :"Booking done successfully",
-    subject : "Alert - Event Photography"
-  };
-  
   useEffect(()=>{
     document.title= "Event || Booking"
     getUser();
@@ -41,11 +33,6 @@ function Booking(){
   const validate = Yup.object({
     name: Yup.string()
       .required('Customer Name is Required'),
-    // contactNumber:Yup.string()
-    //   .min(10,'should be 10 number')
-    //   .max(10,'should be 10 number')
-    //   .required('Mobile Number is Required'),
- 
     eventDate: Yup.date()
     .transform((curr, orig) => orig === '' ? null : curr)
     .required('Date is required')
@@ -67,7 +54,6 @@ function Booking(){
     axiosObject.post(`/booking`,data).then(
       (response)=>{
         toast.success(response.data,{autoClose: 5000});
-        sendMail();
         localStorage.removeItem('SelectedEvent');
        setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
         console.log(response);
@@ -75,30 +61,11 @@ function Booking(){
       }).catch((error)=>{
         if(error.response){
           toast.error(error.response.data.details,{autoClose: 5000});
-          setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
+         setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
           console.log(error.response.data);
         }
       });
     }
-
-    const sendMail=()=>{
-     // let config = {headers :{'content-type':'application/x-www-form-urlencoded'}};
-      axiosObject.post(`/sendMail`, { body: JSON.stringify(details)}).then(
-        (response)=>{
-          console.log("mail sent");
-          toast.success(response.data,{autoClose: 5000});
-        setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
-          console.log(response);
-        
-        }).catch((error)=>{
-          console.log(details);
-          if(error.response){
-            toast.error(error.response.data.details,{autoClose: 5000});
-            setTimeout(() => { window.location.replace('/user/mybookings'); }, 5000);
-            console.log(error.response.data);
-          }
-        });
-      }
   return (
 <>
 <ToastContainer/>

@@ -9,18 +9,18 @@ import com.example.springapp.exception.ValueExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceimpl implements com.example.springapp.service.UserServices {
-	List<Users> list;
 
+
+	String admin = "admin";
 
 	@Autowired
 	public UserDao dao;
@@ -28,14 +28,18 @@ public class UserServiceimpl implements com.example.springapp.service.UserServic
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
 
-	@Autowired
-	private JavaMailSender mailSender;
-
 	@Override
 	public List<Users> getUser() {
 		List<Users> allUsers = dao.findAll();
+		List<Users> onlyUser = new ArrayList<>();
+		for(Users u:allUsers){
+			if(u.getRole().equals("admin")){
+				continue;
+			}
+			onlyUser.add(u);
+		}
 		if(allUsers.isEmpty()) throw new ResourceNotFoundException("No Users Available");
-		return this.dao.findAll();
+		return onlyUser;
 	}
 	@Override
 	public ResponseEntity<Object> addUser(Users user) {
@@ -43,8 +47,8 @@ public class UserServiceimpl implements com.example.springapp.service.UserServic
 			throw new NullPointerException();
 		}
 		user.setPassword(bcryptEncoder.encode(user.getPassword()));
-		if(user.getName().equals("admin")){
-			user.setRole("admin");
+		if(user.getName().contains(admin)){
+			user.setRole(admin);
 		}else{
 			user.setRole("user");
 		}
@@ -70,14 +74,27 @@ public class UserServiceimpl implements com.example.springapp.service.UserServic
 
 	@Override
 	public ResponseEntity<Object> editUser(Users user) {
+		List<Users> allusers = dao.findAll();
 		Optional<Users> old = dao.findById(user.getId());
 		if(!(old).isPresent()) {
 			throw new ResourceNotFoundException("Couldn't edit : Invalid user");
 		}
 		if(!(old.get().getUsername().equals(user.getUsername()))) throw new ValueExistsException("Username Cannot be changed");
-		if(!(old.get().getEmail().equals(user.getEmail()))) throw new ValueExistsException("Email Cannot be changed");
-		if(!(old.get().getMobile().equals(user.getMobile()))) throw new ValueExistsException("Mobile number Cannot be changed");
-		this.dao.save(user);
+		for (Users x : allusers) {
+			if ((user.getId()!=x.getId()) && user.getEmail().equals(x.getEmail())) {
+				throw new ValueExistsException("This email has already registered");
+			}
+			if ((user.getId()!=x.getId()) && user.getMobile().equals(x.getMobile())){
+				throw new ValueExistsException("This mobile number has already registered");
+			}
+		}
+		Users user1 = old.orElseThrow(()->new RuntimeException("no such data found"));
+		user1.setName(user.getName());
+		user1.setUsername(user.getUsername());
+		user1.setEmail(user.getEmail());
+		user1.setMobile(user.getMobile());
+
+		this.dao.save(user1);
 		return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
 	}
 

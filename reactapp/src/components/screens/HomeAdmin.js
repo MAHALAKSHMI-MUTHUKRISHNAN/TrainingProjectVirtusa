@@ -8,6 +8,8 @@ import { Container} from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import EditEvent from "./EditEvent.js"
 import { Modal } from "react-bootstrap";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 function HomeAdmin() {
 
@@ -58,19 +60,19 @@ function HomeAdmin() {
         axiosObject.delete(`/deleteEvent/${value}`).then(
             (response)=>{
                 console.log("Event Deleted");
-                console.log(response);
-                refreshPage();
+                toast.success(response.data,{autoClose: 2000});
+                setTimeout(() => {  window.location.replace('/admin/home'); }, 2000);
             },(error)=>{
+              toast.error(error.response.data.message,{autoClose: 5000});
+              setTimeout(() => { window.location.replace('/admin/home'); }, 5000);
                 console.log(error);
             }
         )
     };
-    const refreshPage=()=>{
-        window.location.reload(false);
-    }
 
   return (
     <>
+    <ToastContainer/>
       <NavbarAdmin/>
     <div className="home-body"style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
 

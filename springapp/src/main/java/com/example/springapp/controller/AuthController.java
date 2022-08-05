@@ -18,11 +18,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -48,9 +47,10 @@ public class AuthController {
   @Autowired
   private JwtUserDetailsService userDetailsService;
 
+
   @PostMapping(value = "/authenticate")
   public ResponseEntity<Object> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws AuthenticationException {
-
+    logger.info("authenticate method accessed");
     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),authenticationRequest.getPassword()));
     final UserDetails userDetails = userDetailsService
         .loadUserByUsername(authenticationRequest.getUsername());
@@ -71,10 +71,28 @@ public class AuthController {
 
   @PostMapping(value = "/register")
   public ResponseEntity<Object> addUser(@RequestBody UserDto userDto){
+    logger.info("register method accessed");
     Users userRequest = modelMapper.map(userDto,Users.class);
     return this.userServices.addUser(userRequest);
   }
 
+  @GetMapping("/getuser")
+  public List<Users> getUser(){
+    logger.info("getUser method accessed");
+    return this.userServices.getUser();
+  }
 
+  @PutMapping("/editUser")
+  public ResponseEntity<Object> editUser(@RequestBody UserDto usersDto){
+    logger.info("edit user method accessed");
+    Users userRequest = modelMapper.map(usersDto,Users.class);
+    return this.userServices.editUser(userRequest);
+  }
+
+  @DeleteMapping("/deleteUser/{id}")
+  public ResponseEntity<Object> deleteUser(@PathVariable String id){
+    logger.info("delete method accessed");
+    return this.userServices.deleteUser(Long.parseLong(id));
+  }
 
 }

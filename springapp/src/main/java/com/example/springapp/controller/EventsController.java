@@ -30,34 +30,38 @@ public class EventsController {
     @PostMapping("/addEvents")
     public ResponseEntity<Object> addEvents(@RequestBody EventsDto eventsDto) {
         logger.info("addEvent method accessed");
-            Events eventRequest = modelMapper.map(eventsDto,Events.class);
         Optional<String> username = SecurityUtils.getCurrentUserLogin();
-        if(username.isEmpty() || !(username.get().equals("admin"))) {
+        if(username.isEmpty() || !(username.get().contains("admin"))) {
             throw new UnAuthorizedException("Only Admins can add Events");
         }
+            Events eventRequest = modelMapper.map(eventsDto,Events.class);
             return  this.eventsServices.addEvents(eventRequest);
     }
 
 
     @GetMapping("/viewAllEvents")
     public List<Events> viewAllEvents(){
+        logger.info("viewAllEvent method accessed");
         return eventsServices.viewAllEvents();
     }
 
     @GetMapping("/viewEventBooking/{id}")
     public List<Booking> viewEventBooking(@PathVariable String id){
+        logger.info("viewEvent Booking method accessed");
         return eventsServices.viewEventBookings(Long.parseLong(id));
 
     }
 
     @DeleteMapping("/deleteEvent/{id}")
     public ResponseEntity<Object> deleteEvent(@PathVariable String id){
+        logger.info("deleteEvent method accessed");
         return  this.eventsServices.deleteEvent(Long.parseLong(id));
 
     }
 
     @PutMapping("/updateEvent")
     public ResponseEntity<Object> updateEvent(@RequestBody EventsDto eventsDto){
+        logger.info("updateEvent method accessed");
         Events eventRequest = modelMapper.map(eventsDto,Events.class);
         return this.eventsServices.updateEvent(eventRequest);
     }

@@ -1,0 +1,6 @@
+
+.error-body{
+    height:99.9vh;
+    background: linear-gradient(135deg, var(--primary),var(--secondary));
+}
+

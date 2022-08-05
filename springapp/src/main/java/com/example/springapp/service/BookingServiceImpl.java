@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.awt.print.Book;
 import java.util.*;
 
 @Service
@@ -31,17 +29,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public ResponseEntity<Object> addBooking(Booking booking) {
+        booking.setConfirmStatus("pending");
         List<Booking> allBookings = bookingDao.findAll();
         for(Booking x:allBookings){
             if(booking.getEventDate().isEqual(x.getEventDate())){
                 throw new DateBookedException("Date"+booking.getEventDate()+" already Booked !");
             }
         }
+        this.bookingDao.save(booking);
 
-        var bookId = booking.getBookId();
         var eId = booking.getEId();
         var uId = booking.getUId();
-        if(bookId ==0 || eId==0 || uId==0  || booking.getEventTiming()==null|| booking.getEventDate()==null || booking.getLocationUrl()==null||booking.getEventPlace()==null||booking.getMobileNumber()==null) {
+        if( eId==0 || uId==0  || booking.getEventTiming()==null|| booking.getEventDate()==null || booking.getLocationUrl()==null||booking.getEventPlace()==null||booking.getMobileNumber()==null) {
             throw new NullPointerException("Null values are not accepted");
         }
 
@@ -49,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
         List<Events> events = this.eventsDao.findAll();
         for(Events x:events){
             if(Objects.equals(x.getId(),booking.getEId())){
-               x.getBookings().add(booking);
+                x.getBookings().add(booking);
                 this.eventsDao.save(x);
             }
             else{
@@ -59,19 +58,21 @@ public class BookingServiceImpl implements BookingService {
         if(events.isEmpty()) throw new ResourceNotFoundException("No events found");
 
         //adding to user
-        List<Users> users = this.userDao.findAll();
-        for(Users y:users){
-            if(Objects.equals(y.getId(),booking.getUId())){
-                y.getBookings().add(booking);
-                this.userDao.save(y);
-            }else {
-                throw new ResourceNotFoundException("No user found with id"+booking.getUId());
-            }
+     //   List<Users> users = this.userDao.findAll();
+     //   for(Users y:users){
+      //      if(Objects.equals(y.getId(),booking.getUId())){
+      //          y.getBookings().add(booking);
+    //            this.userDao.save(y);
+      //      }else {
+      //          throw new ResourceNotFoundException("No user found with id"+y.getId());
+      //      }
+        //}
+        Optional<Users> user = userDao.findById(booking.getUId());
+        if(user.isPresent()){
+          user.get().getBookings().add(booking);
+           userDao.save(user.get());
         }
-        if(users.isEmpty()) throw new ResourceNotFoundException("No users found");
 
-        booking.setConfirmStatus("pending");
-        this.bookingDao.save(booking);
         return new ResponseEntity<>("Booking done successfully", HttpStatus.OK);
     }
 
@@ -93,7 +94,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings.add(x);
             }
         }
-        if(bookings.size()==0) throw new ResourceNotFoundException("No Bookings Available for this user");
+        if(bookings.isEmpty()) throw new ResourceNotFoundException("No Bookings Available for this user");
         return bookings;
     }
 

@@ -32,23 +32,6 @@ public class UserServicesImplTest {
     @InjectMocks
     private UserServiceimpl userService;
 
-    @Test
-    public void testGetAllUsers(){
-       List<Users>  users = new ArrayList<>();
-       users.add(new Users());
-       users.add(new Users());
-        given(userDao.findAll()).willReturn(users);
-        List<Users> expected = userService.getUser();
-        assertEquals(expected,users);
-        assertEquals(2,expected.size());
-    }
-
-    @Test(expected = ResourceNotFoundException.class)
-    public void testGetAllUsersIfNoUsers(){
-        List<Users>  users = new ArrayList<>();
-        given(userDao.findAll()).willReturn(users);
-        userService.getUser();
-    }
 
     @Test
     public void testAddUsers() {
@@ -140,17 +123,27 @@ public class UserServicesImplTest {
     public void testUpdateEventsIfMobileNotSame(){
         List<Booking> allBookings = new ArrayList<>();
         Users users1 = new Users(1,"user","maha","maha","8768766788","maha@gmail.com","test1234",allBookings);
-        Users users2 = new Users(1,"user","mahalakshmi","maha","8768789788","maha@gmail.com","test1234",allBookings);
-        given(userDao.findById(users2.getId())).willReturn(java.util.Optional.of(users1));
-        userService.editUser(users2);
+        Users users2 = new Users(2,"user","mahalakshmi","maha","8768768988","mahalad@gmail.com","test1234",allBookings);
+        Users users3 = new Users(1,"user","abi","maha","8768768988","maha@gmail.com","test1234",allBookings);
+        List<Users> allUsers = new ArrayList<>();
+        allUsers.add(users1);
+        allUsers.add(users2);
+        given(userDao.findById(users3.getId())).willReturn(java.util.Optional.of(users1));
+        given(userDao.findAll()).willReturn(allUsers);
+        userService.editUser(users3);
     }
 
     @Test(expected = ValueExistsException.class)
     public void testUpdateEventsIfEmailNotSame(){
         List<Booking> allBookings = new ArrayList<>();
         Users users1 = new Users(1,"user","maha","maha","8768766788","maha@gmail.com","test1234",allBookings);
-        Users users2 = new Users(1,"user","mahalakshmi","maha","8768766788","mahalad@gmail.com","test1234",allBookings);
-        given(userDao.findById(users2.getId())).willReturn(java.util.Optional.of(users1));
-        userService.editUser(users2);
+        Users users2 = new Users(2,"user","mahalakshmi","maha","8768768988","mahalad@gmail.com","test1234",allBookings);
+        Users users3 = new Users(1,"user","abi","maha","8768766788","mahalad@gmail.com","test1234",allBookings);
+        List<Users> allUsers = new ArrayList<>();
+        allUsers.add(users1);
+        allUsers.add(users2);
+        given(userDao.findById(users3.getId())).willReturn(java.util.Optional.of(users1));
+        given(userDao.findAll()).willReturn(allUsers);
+        userService.editUser(users3);
     }
 }

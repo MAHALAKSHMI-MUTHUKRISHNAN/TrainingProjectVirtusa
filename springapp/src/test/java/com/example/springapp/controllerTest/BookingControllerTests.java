@@ -1,5 +1,7 @@
 package com.example.springapp.controllerTest;
+
 import com.example.springapp.AbstractTest;
+import com.example.springapp.dao.EventsDao;
 import com.example.springapp.dao.UserDao;
 import com.example.springapp.entity.Booking;
 import com.example.springapp.entity.Events;
@@ -16,14 +18,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class EventsControllerTests extends AbstractTest {
+public class BookingControllerTests  extends AbstractTest {
 
     @Override
     @Before
@@ -32,21 +32,23 @@ public class EventsControllerTests extends AbstractTest {
     }
 
     @Autowired
+    private EventsDao eventsDao;
+
+    @Autowired
     private UserDao userDao;
 
     @Test
-    @WithMockUser(username = "admin",password = "test1234")
     public void test01() throws Exception {
-        String uri = "/addEvents";
-        Booking book1 = new Booking(1,2,1,"maha","8678999537", LocalDate.of(2022,8,11),"Chennai","http://fhgshf","19.08",250,"pending",new Payment());
-        List<Booking> allBookings = new ArrayList<>();
-        allBookings.add(book1);
+        String uri = "/booking";
+        Booking book1 = new Booking(1,1,1,"maha","8678999537", LocalDate.of(2022,8,11),"Chennai","http://fhgshf","19.08",250,"pending",new Payment());
+        Events events = new Events();
+        events.setId(1);
+        eventsDao.save(events);
         Users users = new Users();
-        users.setUsername("admin");
         users.setId(1);
+        users.setUsername("maha");
         userDao.save(users);
-        Events events = new Events(1, "Birthday", "h", 34000, "details", allBookings);
-        String inputJson = super.mapToJson(events);
+        String inputJson = super.mapToJson(book1);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(inputJson)).andReturn();
@@ -54,12 +56,68 @@ public class EventsControllerTests extends AbstractTest {
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("Event added successfully",content);
+        assertEquals("Booking done successfully",content);
     }
 
     @Test
     public void test02() throws Exception {
-        String uri = "/viewEventBooking/1";
+        String uri = "/editBooking";
+        Booking book1 = new Booking(1,1,1,"maha","8678999537", LocalDate.of(2022,8,11),"Guindy","http://fhgshf","19.08",250,"pending",new Payment());
+        String inputJson = super.mapToJson(book1);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String content = mvcResult.getResponse().getContentAsString();
+        assertEquals("Booking updated successfully",content);
+    }
+
+    @Test
+    public void test03() throws Exception {
+        String uri = "/confirmStatus";
+        Booking book1 = new Booking(1,1,1,"maha","8678999537", LocalDate.of(2022,8,11),"Guindy","http://fhgshf","19.08",250,"Confirmed",new Payment());
+        String inputJson = super.mapToJson(book1);
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String content = mvcResult.getResponse().getContentAsString();
+        assertEquals("Confirm Status updated",content);
+    }
+
+    @Test
+    public void test04() throws Exception {
+        String uri = "/search?query=maha";
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String content = mvcResult.getResponse().getContentAsString();
+        Booking[] bookings = super.mapFromJson(content,Booking[].class);
+        assertEquals(1,bookings.length);
+    }
+
+    @Test
+    public void test05() throws Exception {
+        String uri = "/getAllBookings";
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String content = mvcResult.getResponse().getContentAsString();
+        Booking[] events = super.mapFromJson(content,Booking[].class);
+        assertTrue(events.length > 0);
+    }
+
+    @Test
+    @WithMockUser(username = "maha",password = "test1234")
+    public void test06() throws Exception {
+        String uri = "/getUserBookings";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
@@ -71,67 +129,13 @@ public class EventsControllerTests extends AbstractTest {
     }
 
     @Test
-    public void test03() throws Exception {
-        String uri = "/updateEvent";
-        List<Booking> allBookings = new ArrayList<>();
-        Events events = new Events(1, "Birthday", "h", 20000, "details", allBookings);
-        String inputJson = super.mapToJson(events);
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("Event updated successfully",content);
-    }
-
-    @Test
-    public void test04() throws Exception {
-        String uri = "/viewAllEvents";
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        Events[] events = super.mapFromJson(content,Events[].class);
-        assertTrue(events.length > 0);
-    }
-
-
-    @Test
-    public void test05() throws Exception {
-        String uri = "/deleteEvent/1";
+    public void test07() throws Exception {
+        String uri = "/deleteBooking/1";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("Event deleted successfully",content );
+        assertEquals("Booking deleted successfully",content );
     }
-
-    @Test
-    @WithMockUser(username = "user",password = "test1234")
-    public void test06() throws Exception {
-        String uri = "/addEvents";
-        Booking book1 = new Booking(1,2,1,"maha","8678999537", LocalDate.of(2022,8,11),"Chennai","http://fhgshf","19.08",250,"pending",new Payment());
-        List<Booking> allBookings = new ArrayList<>();
-        allBookings.add(book1);
-        Users users = new Users();
-        users.setUsername("admin");
-        users.setId(1);
-        userDao.save(users);
-        Events events = new Events(1, "Anniversary", "h", 34000, "details", allBookings);
-        String inputJson = super.mapToJson(events);
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(401, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertTrue(content.contains("Only Admins can add Events"));
-    }
-
 
 }

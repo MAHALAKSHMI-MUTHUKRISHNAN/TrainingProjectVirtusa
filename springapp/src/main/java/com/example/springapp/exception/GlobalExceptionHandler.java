@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.NoSuchElementException;
@@ -85,6 +86,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleNullPointerException(NullPointerException exception){
         logger.error("Null value not accepted");
         return  new ResponseEntity<>("Null value not accepted",HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    public ResponseEntity<ResponseMessage> handleMaxSizeException(MaxUploadSizeExceededException exception){
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage("File too large"));
     }
 
 
