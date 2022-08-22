@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     httpSecurity.csrf().disable()
-        .authorizeRequests().antMatchers("/authenticate", "/register","/files/**","http://localhost:8080/files/0054e24f-2be9-4797-b07a-67f32df8623f","/actuator/**","/event-docs/**","/swagger-ui/**","/swagger-ui.html","/viewAllEvents").permitAll().
+        .authorizeRequests().antMatchers("/authenticate", "/register","/files/**","/sendMail","/actuator/**","/event-docs/**","/swagger-ui/**","/swagger-ui.html","/viewAllEvents").permitAll().
             anyRequest().authenticated().and().
             exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

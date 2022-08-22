@@ -5,6 +5,7 @@ import com.example.springapp.config.SecurityUtils;
 import com.example.springapp.dao.UserDao;
 import com.example.springapp.dto.UserDto;
 import com.example.springapp.entity.Users;
+import com.example.springapp.exception.UnAuthorizedException;
 import com.example.springapp.model.JwtRequest;
 import com.example.springapp.model.JwtResponse;
 import com.example.springapp.service.JwtUserDetailsService;
@@ -18,7 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,10 +61,11 @@ public class AuthController {
   @GetMapping(value = "/mydetails")
   public Users getMyDetails() {
     Optional<String> user = SecurityUtils.getCurrentUserLogin();
-    Users myUser = new Users();
+    Users myUser ;
     if(user.isPresent()) {
       myUser = dao.findByUsername(user.get());
-
+    }else{
+      throw new UnAuthorizedException("User not found");
     }
     return myUser;
   }

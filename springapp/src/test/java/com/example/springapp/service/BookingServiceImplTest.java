@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.BDDMockito.given;
 
@@ -64,17 +65,15 @@ public class BookingServiceImplTest {
 
     @Test
     public void testAddBookings() {
-        Booking book1 = new Booking(1,2,1,"maha","8678999537", LocalDate.of(2022,8,11),"Chennai","http://fhgshf","19.08",250,"pending",new Payment());
+        Booking book1 = new Booking(1,1,1,"maha","8678999537", LocalDate.of(2022,8,11),"Chennai","http://fhgshf","19.08",250,"pending",new Payment());
         Events events = new Events();
         events.setId(1);
         List<Events> allEvents = new ArrayList<>();
         allEvents.add(events);
-        Users user = new Users();
-        user.setId(2);
-        List<Users> allUsers = new ArrayList<>();
-        allUsers.add(user);
+        Optional<Users> user = Optional.of(new Users());
+        user.get().setId(1);
         given(eventsDao.findAll()).willReturn(allEvents);
-        given(userDao.findAll()).willReturn(allUsers);
+        given(userDao.findById(book1.getUId())).willReturn(user);
         ResponseEntity<Object> created = bookingService.addBooking(book1);
         assertEquals(HttpStatus.OK,created.getStatusCode() );
     }
@@ -119,9 +118,8 @@ public class BookingServiceImplTest {
         events.setId(1);
         List<Events> allEvents = new ArrayList<>();
         allEvents.add(events);
-        List<Users> allUsers = new ArrayList<>();
         given(eventsDao.findAll()).willReturn(allEvents);
-        given(userDao.findAll()).willReturn(allUsers);
+        given(userDao.findById(anyLong())).willReturn(java.util.Optional.ofNullable(null));
         ResponseEntity<Object> created = bookingService.addBooking(book1);
     }
 
@@ -132,12 +130,10 @@ public class BookingServiceImplTest {
         events.setId(1);
         List<Events> allEvents = new ArrayList<>();
         allEvents.add(events);
-        Users user = new Users();
-        user.setId(1);
-        List<Users> allUsers = new ArrayList<>();
-        allUsers.add(user);
+        Optional<Users> user = Optional.of(new Users());
+        user.get().setId(1);
         given(eventsDao.findAll()).willReturn(allEvents);
-        given(userDao.findAll()).willReturn(allUsers);
+        given(userDao.findById(book1.getUId())).willReturn(java.util.Optional.ofNullable(null));
         ResponseEntity<Object> created = bookingService.addBooking(book1);
     }
 
