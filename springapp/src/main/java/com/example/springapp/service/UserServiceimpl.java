@@ -68,7 +68,7 @@ public class UserServiceimpl implements com.example.springapp.service.UserServic
 		}
 
 		dao.save(user);
-		return new ResponseEntity<>("Welcome "+user.getName()+", you've registered successfully", HttpStatus.OK);
+		return new ResponseEntity<>("Welcome "+user.getName()+"-"+ user.getRole()+", you've registered successfully", HttpStatus.OK);
 
 	}
 

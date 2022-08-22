@@ -25,8 +25,8 @@ public class EmailServiceImpl implements EmailService{
         if(emailDetails.getRecipient() == null) throw new NullPointerException("Recipient found to be null");
         try{
             SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom(sender);
-            mailMessage.setTo(emailDetails.getRecipient());
+            mailMessage.setFrom(emailDetails.getRecipient());
+            mailMessage.setTo(sender);
             mailMessage.setSubject(emailDetails.getSubject());
             mailMessage.setText(emailDetails.getMsgBody());
             mailSender.send(mailMessage);

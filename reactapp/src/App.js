@@ -20,6 +20,7 @@ import AdminRoute from "./AdminRoute";
 import UserRoute from "./UserRoute";
 import UnAuthorized from "./components/screens/UnAuthorized";
 import Error from "./components/screens/Error";
+import Contact from './components/screens/Contact';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <UserRoute path="/payment" exact component={CreditCardForm}></UserRoute>
         <Route path="/services" exact component={Services}></Route>
         <Route path="/unauthorized" exact component={UnAuthorized}></Route>
+        <Route path="/contact" exact component={Contact}></Route>
         <UserRoute path="/user/profile" exact component={UserProfile}></UserRoute>
         <Route path="/**" exact component={Error}></Route>
         
